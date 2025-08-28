@@ -9,4 +9,5 @@ export interface UserType {
 export interface UserContextType {
   user: UserType | null;  
   setUser: React.Dispatch<React.SetStateAction<UserType | null>>;
-}
+}//Dispatch is a TypeScript type provided by React.
+// For example, when you do setUser(...) in useState, you are calling a dispatch function.

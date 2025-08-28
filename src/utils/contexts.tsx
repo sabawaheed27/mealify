@@ -19,3 +19,7 @@ export const UserContextProvider = (
     )
 
 }
+//createContext: used to create a React context for global state
+//useState: used to store and update local state
+//useContextType: TypeScript type describing the shape of your context(user + setUser)
+//UserType: TypeScript type describing a user object (name, password, favcategory, etc) 

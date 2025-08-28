@@ -9,79 +9,82 @@ const LoginForm = () => {
   const [error, setError] = useState<string | null>(null);
 
   const userContext = useContext(UserContext);
-
-  if (!userContext) {
-    throw new Error("LoginForm must be used within UserContextProvider");
-  }
+  if (!userContext) throw new Error("LoginForm must be used within UserContextProvider");
 
   const { user, setUser } = userContext;
-
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Look for user with BOTH name and password match
     const foundUser = UserArray.find(
-      (u) => u.name === username.trim() && u.password === password.trim()
+      (u) => u.name.toLowerCase() === username.trim().toLowerCase() && u.password === password.trim()
     );
 
     if (!foundUser) {
-      setError("Invalid username or password ");
+      setError("Invalid username or password");
     } else {
       setError(null);
-      setUser(foundUser); // store logged in user
-      setUsername(""); // clear input
-      setPassword(""); // clear input
+      setUser(foundUser);
+      setUsername("");
+      setPassword("");
     }
   };
 
-  return (
-    <div className="flex flex-col items-center gap-3 w-64 relative">
-      {/* 🔹 Top-right logout bar */}
-      {user && (
-        <div className="absolute top-0 right-0 flex items-center gap-2">
+  // Early return for logged-in user
+  if (user) {
+    return (
+      <div className="relative w-full max-w-md text-center p-4">
+        <div className="flex justify-between items-center mb-4">
           <span className="font-semibold text-blue-700">Hi, {user.name}</span>
           <button
             onClick={() => setUser(null)}
-            className="bg-red-500 text-white px-2 py-1 rounded text-sm"
+            className="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 transition"
           >
             Logout
           </button>
         </div>
-      )}
+        <p className="text-green-600 font-bold text-lg">Welcome {user.name}!</p>
+      </div>
+    );
+  }
 
-      {/* 🔹 Main area */}
-      {user ? (
-        <p className="text-green-600 font-bold mt-10">Welcome {user.name} </p>
-      ) : (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <label htmlFor="username">Enter your name</label>
-          <input
-            id="username"
-            placeholder="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="border rounded px-2 py-1"
-          />
+  return (
+     <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-4 w-full max-w-md mx-auto"
+    >
+      <label htmlFor="username" className="text-gray-700 font-medium">
+        Username
+      </label>
+      <input
+        id="username"
+        placeholder="Enter your username"
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        className="border rounded px-3 py-2 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
 
-          <label htmlFor="password">Enter your password</label>
-          <input
-            id="password"
-            type="password"
-            placeholder="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="border rounded px-2 py-1"
-          />
+      <label htmlFor="password" className="text-gray-700 font-medium">
+        Password
+      </label>
+      <input
+        id="password"
+        type="password"
+        placeholder="Enter your password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="border rounded px-3 py-2 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
 
-          <button type="submit" className="bg-blue-500 text-white rounded px-3 py-1">
-            Login
-          </button>
+      <button
+        type="submit"
+        className="bg-blue-500 text-white font-semibold rounded px-4 py-2 hover:bg-blue-600 transition"
+      >
+        Login
+      </button>
 
-          {error && <p className="text-red-600">{error}</p>}
-        </form>
-      )}
-    </div>
+      {error && <p className="text-red-600 text-sm">{error}</p>}
+    </form>
   );
 };
 
